@@ -1,0 +1,168 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Simple Archery</title>
+
+    <style>
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
+      body {
+        height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background: #eaeaea;
+        font-family: Arial, sans-serif;
+      }
+
+      .game-area {
+        width: 600px;
+        height: 420px;
+        background: linear-gradient(#fff, #f6f6f6);
+        border: 3px solid #222;
+        border-radius: 12px;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .board {
+        width: 44px;
+        height: 44px;
+        position: absolute;
+        background: linear-gradient(145deg, #333, #000);
+        border-radius: 8px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.25);
+      }
+
+      .bow {
+        width: 50px;
+        height: 14px;
+        background: linear-gradient(#444, #111);
+        position: absolute;
+        bottom: 18px;
+        border-radius: 10px;
+        box-shadow: 0 3px 6px rgba(0, 0, 0, 0.3);
+      }
+
+      .arrow {
+        position: absolute;
+        width: 4px;
+        height: 18px;
+        background: #333;
+      }
+
+      .arrow::after {
+        content: "";
+        position: absolute;
+        top: -6px;
+        left: -4px;
+        border-left: 6px solid transparent;
+        border-right: 6px solid transparent;
+        border-bottom: 6px solid #333;
+      }
+
+      button {
+        position: absolute;
+        bottom: 5px;
+        left: 50%;
+        transform: translateX(-50%);
+        padding: 10px 24px;
+        font-weight: bold;
+        border: none;
+        border-radius: 8px;
+        background: #222;
+        color: white;
+        cursor: pointer;
+      }
+
+      button:hover {
+        background: #000;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="game-area" id="game">
+      <div class="board" id="board"></div>
+      <div class="bow" id="bow"></div>
+    </div>
+    <button id="startBtn">Start</button>
+
+    <script>
+      const game = document.getElementById("game");
+      const board = document.getElementById("board");
+      const bow = document.getElementById("bow");
+      const startBtn = document.getElementById("startBtn");
+
+      let boardInterval = null;
+
+      function moveBoard() {
+        const maxX = game.clientWidth - board.clientWidth;
+        const maxY = bow.offsetTop - board.clientHeight - 10;
+
+        board.style.left = Math.random() * maxX + "px";
+        board.style.top = Math.random() * maxY + "px";
+      }
+
+      startBtn.addEventListener("click", () => {
+        if (boardInterval) return;
+        moveBoard();
+        boardInterval = setInterval(moveBoard, 1500);
+      });
+
+      game.addEventListener("click", (e) => {
+        const rect = game.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const maxX = game.clientWidth - bow.clientWidth;
+
+        bow.style.left =
+          Math.min(Math.max(x - bow.clientWidth / 2, 0), maxX) + "px";
+
+        shootArrow();
+      });
+
+      function shootArrow() {
+        const arrow = document.createElement("div");
+        arrow.className = "arrow";
+
+        let arrowX = bow.offsetLeft + bow.offsetWidth / 2 - 2;
+        let arrowY = bow.offsetTop;
+
+        arrow.style.left = arrowX + "px";
+        arrow.style.top = arrowY + "px";
+
+        game.appendChild(arrow);
+
+        const arrowInterval = setInterval(() => {
+          arrowY -= 8;
+          arrow.style.top = arrowY + "px";
+
+          const a = arrow.getBoundingClientRect();
+          const b = board.getBoundingClientRect();
+
+          if (
+            a.left < b.right &&
+            a.right > b.left &&
+            a.top < b.bottom &&
+            a.bottom > b.top
+          ) {
+            // HIT — board keeps moving
+            arrow.remove();
+            clearInterval(arrowInterval);
+          }
+
+          if (arrowY < -30) {
+            arrow.remove();
+            clearInterval(arrowInterval);
+          }
+        }, 10);
+      }
+    </script>
+  </body>
+</html>

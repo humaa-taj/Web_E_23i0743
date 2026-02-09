@@ -1,0 +1,1046 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Archery Game - Moving Target</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        min-height: 100vh;
+        background: linear-gradient(
+          180deg,
+          #0d2137 0%,
+          #1a3a52 50%,
+          #0f292f 100%
+        );
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        user-select: none;
+        overflow: hidden;
+      }
+
+      .game-container {
+        display: flex;
+        align-items: center;
+        gap: 0;
+        width: 100%;
+        max-width: 1400px;
+        padding: 0 24px;
+        flex: 1;
+      }
+
+      /* Left side - Bow area */
+      .bow-area {
+        width: 150px;
+        height: 60vh;
+        min-height: 400px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        position: relative;
+        background: linear-gradient(145deg, #1a2a3a 0%, #2d4a5a 100%);
+        border: 3px solid rgba(139, 90, 43, 0.6);
+        border-radius: 12px;
+        box-shadow: inset 0 0 40px rgba(0, 0, 0, 0.4);
+      }
+
+      h1 {
+        color: rgba(255, 255, 255, 0.9);
+        font-size: 1.5rem;
+        font-weight: 600;
+        padding: 16px 0;
+        letter-spacing: 0.05em;
+      }
+
+      /* Game stats bar */
+      .stats-bar {
+        display: flex;
+        gap: 24px;
+        padding: 12px 24px;
+        background: rgba(0, 0, 0, 0.3);
+        border-radius: 12px;
+        margin-bottom: 16px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+      }
+
+      .stat {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 4px;
+      }
+
+      .stat-label {
+        color: rgba(255, 255, 255, 0.7);
+        font-size: 0.75rem;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+      }
+
+      .stat-value {
+        color: #fff;
+        font-size: 1.5rem;
+        font-weight: 700;
+      }
+
+      .stat-value.arrows {
+        color: #f39c12;
+      }
+
+      .stat-value.score {
+        color: #27ae60;
+      }
+
+      /* Range area where the target moves - right side */
+      .range-area {
+        flex: 1;
+        height: 60vh;
+        min-height: 400px;
+        margin-left: 24px;
+        position: relative;
+        background: linear-gradient(145deg, #1e3c4a 0%, #2d5a6a 100%);
+        border: 3px solid rgba(139, 90, 43, 0.8);
+        border-radius: 12px;
+        box-shadow:
+          inset 0 0 60px rgba(0, 0, 0, 0.4),
+          0 8px 24px rgba(0, 0, 0, 0.3);
+        overflow: hidden;
+        cursor: none;
+      }
+
+      .range-area::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: repeating-linear-gradient(
+          0deg,
+          transparent,
+          transparent 20px,
+          rgba(0, 0, 0, 0.06) 20px,
+          rgba(0, 0, 0, 0.06) 21px
+        );
+        pointer-events: none;
+      }
+
+      /* Archery target board - moves anywhere in range area */
+      .target-board {
+        position: absolute;
+        width: 180px;
+        height: 180px;
+        left: 70%;
+        top: 50%;
+        transform: translate(-50%, -50%);
+        transition:
+          left 0.6s ease-in-out,
+          top 0.6s ease-in-out;
+        cursor: none;
+      }
+
+      .target-board .ring {
+        position: absolute;
+        border-radius: 50%;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        box-shadow:
+          inset 0 2px 8px rgba(0, 0, 0, 0.35),
+          0 2px 4px rgba(0, 0, 0, 0.2);
+      }
+
+      /* Ring colors with point values */
+      .ring-1 {
+        width: 30px;
+        height: 30px;
+        background: #f4d03f;
+        border: 2px solid #c9a227;
+      }
+      .ring-2 {
+        width: 60px;
+        height: 60px;
+        background: #f4d03f;
+        border: 2px solid #c9a227;
+      }
+      .ring-3 {
+        width: 90px;
+        height: 90px;
+        background: #e74c3c;
+        border: 2px solid #c0392b;
+      }
+      .ring-4 {
+        width: 120px;
+        height: 120px;
+        background: #e74c3c;
+        border: 2px solid #c0392b;
+      }
+      .ring-5 {
+        width: 150px;
+        height: 150px;
+        background: #3498db;
+        border: 2px solid #2980b9;
+      }
+      .ring-6 {
+        width: 180px;
+        height: 180px;
+        background: #2c3e50;
+        border: 2px solid #1a252f;
+      }
+
+      .target-frame {
+        position: absolute;
+        width: 200px;
+        height: 200px;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background: linear-gradient(
+          135deg,
+          #8b5a2b 0%,
+          #6b4423 50%,
+          #5d3a1f 100%
+        );
+        border-radius: 8px;
+        box-shadow:
+          inset 0 0 0 6px #5d3a1f,
+          inset 0 0 20px rgba(0, 0, 0, 0.4),
+          0 6px 20px rgba(0, 0, 0, 0.5);
+        pointer-events: none;
+      }
+
+      .target-board .rings-wrapper {
+        position: absolute;
+        width: 180px;
+        height: 180px;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+      }
+
+      /* Hit marker - dot on target */
+      .hit-marker {
+        position: absolute;
+        width: 10px;
+        height: 10px;
+        background: #e74c3c;
+        border: 2px solid #fff;
+        border-radius: 50%;
+        pointer-events: none;
+        z-index: 5;
+        box-shadow:
+          0 0 10px rgba(231, 76, 60, 0.9),
+          0 0 20px rgba(231, 76, 60, 0.5);
+        animation: dotPulse 0.3s ease-out;
+      }
+
+      @keyframes dotPulse {
+        0% {
+          transform: translate(-50%, -50%) scale(0);
+          opacity: 0;
+        }
+        50% {
+          transform: translate(-50%, -50%) scale(1.5);
+          opacity: 1;
+        }
+        100% {
+          transform: translate(-50%, -50%) scale(1);
+          opacity: 1;
+        }
+      }
+
+      /* Impact burst effect */
+      .impact-burst {
+        position: absolute;
+        width: 60px;
+        height: 60px;
+        pointer-events: none;
+        z-index: 25;
+        animation: burstExpand 0.5s ease-out forwards;
+      }
+
+      @keyframes burstExpand {
+        0% {
+          transform: translate(-50%, -50%) scale(0.3);
+          opacity: 1;
+        }
+        100% {
+          transform: translate(-50%, -50%) scale(1.5);
+          opacity: 0;
+        }
+      }
+
+      .impact-burst::before,
+      .impact-burst::after {
+        content: "";
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        border-radius: 50%;
+      }
+
+      .impact-burst::before {
+        width: 100%;
+        height: 100%;
+        background: radial-gradient(
+          circle,
+          rgba(244, 208, 63, 0.8) 0%,
+          rgba(244, 208, 63, 0) 70%
+        );
+      }
+
+      .impact-burst::after {
+        width: 80%;
+        height: 80%;
+        background: radial-gradient(
+          circle,
+          rgba(255, 255, 255, 0.9) 0%,
+          rgba(255, 255, 255, 0) 60%
+        );
+      }
+
+      /* Miss splash effect */
+      .miss-splash {
+        position: absolute;
+        width: 40px;
+        height: 40px;
+        pointer-events: none;
+        z-index: 25;
+        animation: splashFade 0.6s ease-out forwards;
+      }
+
+      @keyframes splashFade {
+        0% {
+          transform: translate(-50%, -50%) scale(0.5);
+          opacity: 0.8;
+        }
+        100% {
+          transform: translate(-50%, -50%) scale(1.2);
+          opacity: 0;
+        }
+      }
+
+      .miss-splash::before {
+        content: "";
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 100%;
+        height: 100%;
+        border-radius: 50%;
+        background: radial-gradient(
+          circle,
+          rgba(149, 165, 166, 0.6) 0%,
+          rgba(149, 165, 166, 0) 70%
+        );
+      }
+
+      /* Score popup */
+      .score-popup {
+        position: absolute;
+        font-size: 2rem;
+        font-weight: 700;
+        color: #f4d03f;
+        text-shadow:
+          2px 2px 4px rgba(0, 0, 0, 0.8),
+          0 0 10px rgba(244, 208, 63, 0.6);
+        pointer-events: none;
+        z-index: 20;
+        animation: scoreFloat 1s ease-out forwards;
+      }
+
+      @keyframes scoreFloat {
+        0% {
+          transform: translateY(0) scale(1);
+          opacity: 1;
+        }
+        100% {
+          transform: translateY(-60px) scale(1.3);
+          opacity: 0;
+        }
+      }
+
+      /* Bow indicator in bow area - fixed in center */
+      .bow-indicator {
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -50%);
+        width: 70px;
+        height: 120px;
+        pointer-events: none;
+        z-index: 15;
+      }
+
+      .bow-indicator svg {
+        width: 100%;
+        height: 100%;
+        filter: drop-shadow(0 3px 10px rgba(0, 0, 0, 0.6));
+      }
+
+      /* Aiming line from bow to range area */
+      .aim-line {
+        position: fixed;
+        pointer-events: none;
+        z-index: 5;
+        opacity: 0;
+        transition: opacity 0.2s;
+      }
+
+      .aim-line.charging {
+        opacity: 0.8;
+      }
+
+      .aim-line.ready {
+        opacity: 1;
+        animation: lineGlow 0.5s ease-in-out infinite alternate;
+      }
+
+      @keyframes lineGlow {
+        from {
+          filter: drop-shadow(0 0 2px rgba(255, 255, 255, 0.5));
+        }
+        to {
+          filter: drop-shadow(0 0 6px rgba(255, 255, 255, 0.9));
+        }
+      }
+
+      /* Crosshair in range area */
+      .crosshair {
+        position: absolute;
+        width: 24px;
+        height: 24px;
+        pointer-events: none;
+        z-index: 16;
+        opacity: 0;
+        transition: opacity 0.2s;
+      }
+
+      .crosshair::before,
+      .crosshair::after {
+        content: "";
+        position: absolute;
+        background: rgba(255, 255, 255, 0.9);
+        box-shadow: 0 0 6px rgba(0, 0, 0, 0.8);
+      }
+
+      .crosshair::before {
+        left: 50%;
+        top: 0;
+        width: 2px;
+        height: 100%;
+        transform: translateX(-50%);
+      }
+
+      .crosshair::after {
+        left: 0;
+        top: 50%;
+        width: 100%;
+        height: 2px;
+        transform: translateY(-50%);
+      }
+
+      /* Power meter in bow area */
+      .power-meter {
+        position: absolute;
+        bottom: 20px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 80%;
+        height: 20px;
+        background: rgba(0, 0, 0, 0.4);
+        border: 2px solid rgba(255, 255, 255, 0.3);
+        border-radius: 10px;
+        overflow: hidden;
+        opacity: 0;
+        transition: opacity 0.2s;
+      }
+
+      .power-meter.visible {
+        opacity: 1;
+      }
+
+      .power-fill {
+        height: 100%;
+        width: 0%;
+        background: linear-gradient(
+          90deg,
+          #f39c12 0%,
+          #e74c3c 50%,
+          #27ae60 100%
+        );
+        transition: width 0.05s linear;
+        box-shadow: 0 0 10px rgba(244, 208, 63, 0.6);
+      }
+
+      .power-meter-label {
+        position: absolute;
+        top: -25px;
+        left: 50%;
+        transform: translateX(-50%);
+        color: rgba(255, 255, 255, 0.9);
+        font-size: 0.75rem;
+        font-weight: 600;
+        white-space: nowrap;
+        text-shadow: 0 2px 4px rgba(0, 0, 0, 0.8);
+      }
+
+      /* Controls */
+      .controls {
+        margin-top: auto;
+        padding: 28px 24px 32px;
+        display: flex;
+        gap: 16px;
+        justify-content: center;
+        align-items: center;
+        flex-wrap: wrap;
+      }
+
+      .controls button {
+        padding: 14px 32px;
+        font-size: 1rem;
+        font-weight: 600;
+        letter-spacing: 0.04em;
+        border: none;
+        border-radius: 10px;
+        cursor: pointer;
+        transition:
+          transform 0.15s ease,
+          box-shadow 0.15s ease;
+      }
+
+      .controls button:active {
+        transform: scale(0.98);
+      }
+
+      .controls button:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+      }
+
+      .start-btn {
+        background: linear-gradient(180deg, #27ae60 0%, #1e8449 100%);
+        color: #fff;
+        box-shadow: 0 4px 12px rgba(39, 174, 96, 0.4);
+      }
+
+      .start-btn:hover:not(:disabled) {
+        box-shadow: 0 6px 16px rgba(39, 174, 96, 0.5);
+      }
+
+      .stop-btn {
+        background: linear-gradient(180deg, #e67e22 0%, #d35400 100%);
+        color: #fff;
+        box-shadow: 0 4px 12px rgba(230, 126, 34, 0.4);
+      }
+
+      .stop-btn:hover:not(:disabled) {
+        box-shadow: 0 6px 16px rgba(230, 126, 34, 0.5);
+      }
+
+      .reset-btn {
+        background: linear-gradient(180deg, #95a5a6 0%, #7f8c8d 100%);
+        color: #fff;
+        box-shadow: 0 4px 12px rgba(149, 165, 166, 0.4);
+      }
+
+      .reset-btn:hover:not(:disabled) {
+        box-shadow: 0 6px 16px rgba(149, 165, 166, 0.5);
+      }
+
+      /* Game over overlay */
+      .game-over {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.85);
+        display: none;
+        justify-content: center;
+        align-items: center;
+        z-index: 100;
+      }
+
+      .game-over.show {
+        display: flex;
+      }
+
+      .game-over-content {
+        background: linear-gradient(145deg, #2c3e50 0%, #34495e 100%);
+        padding: 48px;
+        border-radius: 16px;
+        text-align: center;
+        box-shadow: 0 12px 40px rgba(0, 0, 0, 0.6);
+        border: 3px solid rgba(139, 90, 43, 0.8);
+      }
+
+      .game-over-content h2 {
+        color: #fff;
+        font-size: 2.5rem;
+        margin-bottom: 24px;
+      }
+
+      .final-score {
+        color: #f4d03f;
+        font-size: 3rem;
+        font-weight: 700;
+        margin-bottom: 32px;
+        text-shadow: 0 0 20px rgba(244, 208, 63, 0.5);
+      }
+
+      .play-again-btn {
+        padding: 16px 48px;
+        font-size: 1.2rem;
+        font-weight: 600;
+        background: linear-gradient(180deg, #27ae60 0%, #1e8449 100%);
+        color: #fff;
+        border: none;
+        border-radius: 10px;
+        cursor: pointer;
+        box-shadow: 0 4px 12px rgba(39, 174, 96, 0.4);
+        transition: transform 0.15s ease;
+      }
+
+      .play-again-btn:hover {
+        box-shadow: 0 6px 16px rgba(39, 174, 96, 0.5);
+      }
+
+      .play-again-btn:active {
+        transform: scale(0.98);
+      }
+    </style>
+  </head>
+  <body>
+    <h1>🏹 Archery Game — Moving Target</h1>
+
+    <div class="stats-bar">
+      <div class="stat">
+        <div class="stat-label">Arrows</div>
+        <div class="stat-value arrows" id="arrowCount">10</div>
+      </div>
+      <div class="stat">
+        <div class="stat-label">Score</div>
+        <div class="stat-value score" id="scoreValue">0</div>
+      </div>
+      <div class="stat">
+        <div class="stat-label">Hits</div>
+        <div class="stat-value" id="hitCount">0</div>
+      </div>
+    </div>
+
+    <div class="game-container">
+      <!-- Left side: Bow area -->
+      <div class="bow-area" id="bowArea">
+        <div class="bow-indicator" id="bowIndicator">
+          <svg
+            viewBox="0 0 60 100"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M30 10 Q10 50 30 90"
+              stroke="#8b4513"
+              stroke-width="4"
+              fill="none"
+            />
+            <path
+              d="M30 10 Q50 50 30 90"
+              stroke="#8b4513"
+              stroke-width="4"
+              fill="none"
+            />
+            <line
+              x1="30"
+              y1="15"
+              x2="30"
+              y2="85"
+              stroke="#444"
+              stroke-width="2"
+            />
+          </svg>
+        </div>
+        <div class="power-meter" id="powerMeter">
+          <div class="power-meter-label">HOLD TO CHARGE</div>
+          <div class="power-fill" id="powerFill"></div>
+        </div>
+      </div>
+
+      <!-- Right side: Target range area -->
+      <div class="range-area" id="rangeArea">
+        <svg class="aim-line" id="aimLineSvg" width="100%" height="100%">
+          <line
+            id="aimLine"
+            x1="0"
+            y1="0"
+            x2="0"
+            y2="0"
+            stroke="rgba(255, 255, 255, 0.4)"
+            stroke-width="2"
+            stroke-dasharray="8,6"
+          />
+        </svg>
+        <div class="crosshair" id="crosshair"></div>
+        <div class="target-board" id="targetBoard">
+          <div class="target-frame"></div>
+          <div class="rings-wrapper">
+            <div class="ring ring-6" data-points="1"></div>
+            <div class="ring ring-5" data-points="3"></div>
+            <div class="ring ring-4" data-points="5"></div>
+            <div class="ring ring-3" data-points="7"></div>
+            <div class="ring ring-2" data-points="9"></div>
+            <div class="ring ring-1" data-points="10"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="controls">
+      <button class="start-btn" id="startBtn">Start Game</button>
+      <button class="stop-btn" id="stopBtn" disabled>Pause</button>
+      <button class="reset-btn" id="resetBtn">Reset</button>
+    </div>
+
+    <div class="game-over" id="gameOver">
+      <div class="game-over-content">
+        <h2>Game Over!</h2>
+        <div class="final-score" id="finalScore">0</div>
+        <button class="play-again-btn" id="playAgainBtn">Play Again</button>
+      </div>
+    </div>
+
+    <script>
+        const bowArea = document.getElementById("bowArea");
+        const rangeArea = document.getElementById("rangeArea");
+        const targetBoard = document.getElementById("targetBoard");
+        const bowIndicator = document.getElementById("bowIndicator");
+        const crosshair = document.getElementById("crosshair");
+        const aimLine = document.getElementById("aimLine");
+        const aimLineSvg = document.getElementById("aimLineSvg");
+        const powerMeter = document.getElementById("powerMeter");
+        const powerFill = document.getElementById("powerFill");
+        const startBtn = document.getElementById("startBtn");
+        const stopBtn = document.getElementById("stopBtn");
+        const resetBtn = document.getElementById("resetBtn");
+        const arrowCountEl = document.getElementById("arrowCount");
+        const scoreValueEl = document.getElementById("scoreValue");
+        const hitCountEl = document.getElementById("hitCount");
+        const gameOverEl = document.getElementById("gameOver");
+        const finalScoreEl = document.getElementById("finalScore");
+        const playAgainBtn = document.getElementById("playAgainBtn");
+
+        const BOARD_SIZE = 180;
+        const INITIAL_ARROWS = 10;
+        const CHARGE_TIME = 1000; // 1 second to fully charge
+
+        let moveInterval = null;
+        let isGameActive = false;
+        let arrowsRemaining = INITIAL_ARROWS;
+        let score = 0;
+        let hits = 0;
+        let rangeMouseX = 0;
+        let rangeMouseY = 0;
+        let isCharging = false;
+        let chargeStartTime = 0;
+        let chargeAnimationFrame = null;
+        let chargePower = 0;
+
+        function getBounds() {
+          const rect = rangeArea.getBoundingClientRect();
+          const padding = 30;
+          return {
+            minX: padding,
+            maxX: rect.width - BOARD_SIZE - padding,
+            minY: padding,
+            maxY: rect.height - BOARD_SIZE - padding,
+          };
+        }
+
+        function getRandomPosition() {
+          const b = getBounds();
+          const x = b.minX + Math.random() * (b.maxX - b.minX);
+          const y = b.minY + Math.random() * (b.maxY - b.minY);
+          return { x, y };
+        }
+
+        function moveBoard() {
+          const pos = getRandomPosition();
+          targetBoard.style.left = pos.x + BOARD_SIZE / 2 + "px";
+          targetBoard.style.top = pos.y + BOARD_SIZE / 2 + "px";
+        }
+
+        function updateStats() {
+          arrowCountEl.textContent = arrowsRemaining;
+          scoreValueEl.textContent = score;
+          hitCountEl.textContent = hits;
+        }
+
+        // Track mouse in range area - shows crosshair and aim line
+        rangeArea.addEventListener("mousemove", function(e) {
+          const rect = rangeArea.getBoundingClientRect();
+          rangeMouseX = e.clientX - rect.left;
+          rangeMouseY = e.clientY - rect.top;
+
+          crosshair.style.left = rangeMouseX + "px";
+          crosshair.style.top = rangeMouseY + "px";
+
+          updateAimLine();
+        });
+
+        rangeArea.addEventListener("mouseenter", function() {
+          crosshair.style.opacity = "1";
+        });
+
+        rangeArea.addEventListener("mouseleave", function() {
+          crosshair.style.opacity = "0";
+        });
+
+        function updateAimLine() {
+          const bowRect = bowArea.getBoundingClientRect();
+          const rangeRect = rangeArea.getBoundingClientRect();
+
+          // Bow center position
+          const bowCenterY = bowRect.top + bowRect.height / 2;
+
+          // Convert to range area coordinates
+          const x1 = 0;
+          const y1 = bowCenterY - rangeRect.top;
+          const x2 = rangeMouseX;
+          const y2 = rangeMouseY;
+
+          aimLine.setAttribute("x1", x1);
+          aimLine.setAttribute("y1", y1);
+          aimLine.setAttribute("x2", x2);
+          aimLine.setAttribute("y2", y2);
+        }
+
+        function startCharging() {
+          if (!isGameActive || arrowsRemaining <= 0 || isCharging) return;
+
+          isCharging = true;
+          chargeStartTime = Date.now();
+          chargePower = 0;
+
+          powerMeter.classList.add("visible");
+          aimLineSvg.classList.add("charging");
+
+          function animateCharge() {
+            if (!isCharging) return;
+
+            const elapsed = Date.now() - chargeStartTime;
+            chargePower = Math.min(elapsed / CHARGE_TIME, 1);
+
+            powerFill.style.width = (chargePower * 100) + "%";
+
+            // Update aim line appearance
+            if (chargePower >= 0.8) {
+              aimLineSvg.classList.add("ready");
+              aimLine.setAttribute("stroke-width", "3");
+            } else {
+              aimLineSvg.classList.remove("ready");
+              aimLine.setAttribute("stroke-width", "2");
+            }
+
+            chargeAnimationFrame = requestAnimationFrame(animateCharge);
+          }
+
+          animateCharge();
+        }
+
+        function releaseShot() {
+          if (!isCharging) return;
+
+          isCharging = false;
+          cancelAnimationFrame(chargeAnimationFrame);
+
+          // Only shoot if charged enough (at least 30%)
+          if (chargePower >= 0.3) {
+            shootArrow(rangeMouseX, rangeMouseY, chargePower);
+          }
+
+          // Reset UI
+          powerMeter.classList.remove("visible");
+          aimLineSvg.classList.remove("charging", "ready");
+          powerFill.style.width = "0%";
+          aimLine.setAttribute("stroke-width", "2");
+        }
+
+        function shootArrow(targetX, targetY, power) {
+          if (!isGameActive || arrowsRemaining <= 0) return;
+
+          arrowsRemaining--;
+          updateStats();
+
+          // Flash the aim line - color based on power
+          const flashColor = power >= 0.8 ? "rgba(39, 174, 96, 0.95)" : "rgba(255, 255, 255, 0.9)";
+          aimLine.setAttribute("stroke", flashColor);
+          aimLine.setAttribute("stroke-width", "4");
+
+          setTimeout(() => {
+            aimLine.setAttribute("stroke", "rgba(255, 255, 255, 0.4)");
+            aimLine.setAttribute("stroke-width", "2");
+          }, 150);
+
+          // Check hit
+          checkHit(targetX, targetY, power);
+        }
+
+        function checkHit(clickX, clickY, power) {
+          power = power ?? 0;
+          const targetRect = targetBoard.getBoundingClientRect();
+          const rangeRect = rangeArea.getBoundingClientRect();
+
+          const targetCenterX = targetRect.left - rangeRect.left + targetRect.width / 2;
+          const targetCenterY = targetRect.top - rangeRect.top + targetRect.height / 2;
+
+          const distance = Math.sqrt(
+            Math.pow(clickX - targetCenterX, 2) +
+            Math.pow(clickY - targetCenterY, 2)
+          );
+
+          let points = 0;
+
+          // Scoring based on ring distance
+          if (distance <= 15) points = 10;
+          else if (distance <= 30) points = 9;
+          else if (distance <= 45) points = 7;
+          else if (distance <= 60) points = 5;
+          else if (distance <= 75) points = 3;
+          else if (distance <= 90) points = 1;
+
+          if (points > 0) {
+            // Bonus for high power
+            if (power >= 0.9) points += 2;
+            else if (power >= 0.8) points += 1;
+
+            score += points;
+            hits++;
+            updateStats();
+
+            // Impact burst
+            const burst = document.createElement("div");
+            burst.className = "impact-burst";
+            burst.style.left = clickX + "px";
+            burst.style.top = clickY + "px";
+            rangeArea.appendChild(burst);
+            setTimeout(() => burst.remove(), 500);
+
+            // Hit marker
+            const marker = document.createElement("div");
+            marker.className = "hit-marker";
+            const relativeX = clickX - targetCenterX + (BOARD_SIZE / 2);
+            const relativeY = clickY - targetCenterY + (BOARD_SIZE / 2);
+            marker.style.left = relativeX + "px";
+            marker.style.top = relativeY + "px";
+            marker.style.transform = "translate(-50%, -50%)";
+            targetBoard.querySelector(".rings-wrapper").appendChild(marker);
+
+            // Score popup
+            const popup = document.createElement("div");
+            popup.className = "score-popup";
+            popup.textContent = `+${points}`;
+            popup.style.left = clickX + "px";
+            popup.style.top = clickY + "px";
+            popup.style.transform = "translate(-50%, -50%)";
+            rangeArea.appendChild(popup);
+            setTimeout(() => popup.remove(), 1000);
+          } else {
+            // MISS
+            const splash = document.createElement("div");
+            splash.className = "miss-splash";
+            splash.style.left = clickX + "px";
+            splash.style.top = clickY + "px";
+            rangeArea.appendChild(splash);
+            setTimeout(() => splash.remove(), 600);
+          }
+
+          if (arrowsRemaining === 0) {
+            setTimeout(endGame, 800);
+          }
+        }
+
+        function endGame() {
+          isGameActive = false;
+          clearInterval(moveInterval);
+          moveInterval = null;
+
+          startBtn.disabled = false;
+          stopBtn.disabled = true;
+
+          finalScoreEl.textContent = score;
+          gameOverEl.classList.add("show");
+        }
+
+        function startGame() {
+          isGameActive = true;
+          startBtn.disabled = true;
+          stopBtn.disabled = false;
+
+          moveBoard();
+          moveInterval = setInterval(moveBoard, 2500);
+        }
+
+        function pauseGame() {
+          isGameActive = false;
+          clearInterval(moveInterval);
+          moveInterval = null;
+
+          startBtn.disabled = false;
+          stopBtn.disabled = true;
+
+          if (isCharging) {
+            isCharging = false;
+            cancelAnimationFrame(chargeAnimationFrame);
+            powerMeter.classList.remove("visible");
+            aimLineSvg.classList.remove("charging", "ready");
+            powerFill.style.width = "0%";
+          }
+        }
+
+        function resetGame() {
+          pauseGame();
+
+          arrowsRemaining = INITIAL_ARROWS;
+          score = 0;
+          hits = 0;
+          updateStats();
+
+          document.querySelectorAll(".hit-marker").forEach(m => m.remove());
+
+          const b = getBounds();
+          targetBoard.style.left = (b.minX + b.maxX) / 2 + BOARD_SIZE / 2 + "px";
+          targetBoard.style.top = (b.minY + b.maxY) / 2 + BOARD_SIZE / 2 + "px";
+
+          gameOverEl.classList.remove("show");
+          startBtn.disabled = false;
+        }
+
+        // Click and hold in bow area to charge
+        bowArea.addEventListener("mousedown", function(e) {
+          e.preventDefault();
+          startCharging();
+        });
+
+        // Release to shoot
+        document.addEventListener("mouseup", function(e) {
+          if (isCharging) {
+            releaseShot();
+          }
+        });
+
+        startBtn.addEventListener("click", startGame);
+        stopBtn.addEventListener("click", pauseGame);
+        resetBtn.addEventListener("click", resetGame);
+        playAgainBtn.addEventListener("click", resetGame);
+
+    updateStats();
+  </script>
+</body>
+</html>
