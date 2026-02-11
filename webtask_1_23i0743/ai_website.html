@@ -1,0 +1,1428 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>PurrfectGallery | Ultimate Cat Photography Collection</title>
+    <meta
+      name="description"
+      content="Discover the most stunning cat photography collection featuring adorable felines, advanced animations, and an immersive viewing experience for cat lovers worldwide."
+    />
+
+    <style>
+      @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&family=Playfair+Display:wght@400;500;600;700;800;900&display=swap");
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      html {
+        scroll-behavior: smooth;
+      }
+
+      body {
+        font-family: "Poppins", sans-serif;
+        background: #0a0612;
+        color: #ffffff;
+        overflow-x: hidden;
+        line-height: 1.6;
+      }
+
+      /* Advanced Animated Background */
+      #canvas-background {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: -1;
+      }
+
+      .gradient-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background:
+          radial-gradient(
+            circle at 20% 30%,
+            rgba(255, 140, 0, 0.15) 0%,
+            transparent 50%
+          ),
+          radial-gradient(
+            circle at 80% 70%,
+            rgba(255, 105, 180, 0.15) 0%,
+            transparent 50%
+          ),
+          radial-gradient(
+            circle at 50% 50%,
+            rgba(138, 43, 226, 0.1) 0%,
+            transparent 60%
+          );
+        animation: gradientMove 20s ease-in-out infinite;
+        z-index: -1;
+        pointer-events: none;
+      }
+
+      @keyframes gradientMove {
+        0%,
+        100% {
+          transform: scale(1) rotate(0deg);
+          opacity: 1;
+        }
+        50% {
+          transform: scale(1.2) rotate(180deg);
+          opacity: 0.8;
+        }
+      }
+
+      .container {
+        max-width: 1400px;
+        margin: 0 auto;
+        padding: 0 2rem;
+      }
+
+      /* Futuristic Header with Glassmorphism */
+      .header {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        z-index: 1000;
+        background: rgba(10, 6, 18, 0.4);
+        backdrop-filter: blur(30px) saturate(180%);
+        -webkit-backdrop-filter: blur(30px) saturate(180%);
+        border-bottom: 1px solid rgba(255, 140, 0, 0.2);
+        box-shadow: 0 8px 32px rgba(255, 140, 0, 0.1);
+        transition: all 0.3s ease;
+      }
+
+      .header.scrolled {
+        background: rgba(10, 6, 18, 0.8);
+        box-shadow: 0 8px 32px rgba(255, 140, 0, 0.3);
+        border-bottom-color: rgba(255, 140, 0, 0.4);
+      }
+
+      .header-content {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 1.5rem 0;
+      }
+
+      .logo-section {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+      }
+
+      .logo-text {
+        font-family: "Playfair Display", serif;
+        font-size: 2rem;
+        font-weight: 900;
+        background: linear-gradient(
+          135deg,
+          #ff8c00 0%,
+          #ff69b4 50%,
+          #ba55d3 100%
+        );
+        background-size: 200% 200%;
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        animation: neonPulse 3s ease infinite;
+        letter-spacing: 1px;
+        position: relative;
+      }
+
+      .logo-text::before {
+        content: "🐱 PurrfectGallery";
+        position: absolute;
+        top: 0;
+        left: 0;
+        z-index: -1;
+        filter: blur(20px);
+        opacity: 0.5;
+        animation: neonPulse 3s ease infinite;
+      }
+
+      @keyframes neonPulse {
+        0%,
+        100% {
+          background-position: 0% 50%;
+          filter: brightness(1);
+        }
+        50% {
+          background-position: 100% 50%;
+          filter: brightness(1.5);
+        }
+      }
+
+      .nav {
+        display: flex;
+        gap: 0.5rem;
+      }
+
+      .nav-link {
+        color: #ffb380;
+        text-decoration: none;
+        font-weight: 600;
+        padding: 0.8rem 1.8rem;
+        border-radius: 50px;
+        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        position: relative;
+        overflow: hidden;
+        font-size: 1rem;
+        letter-spacing: 0.5px;
+        border: 1px solid transparent;
+      }
+
+      .nav-link::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(
+          90deg,
+          transparent,
+          rgba(255, 140, 0, 0.3),
+          transparent
+        );
+        transition: left 0.5s;
+      }
+
+      .nav-link:hover::before {
+        left: 100%;
+      }
+
+      .nav-link:hover {
+        color: #ffffff;
+        background: rgba(255, 140, 0, 0.1);
+        border-color: rgba(255, 140, 0, 0.5);
+        box-shadow:
+          0 0 20px rgba(255, 140, 0, 0.4),
+          inset 0 0 20px rgba(255, 140, 0, 0.1);
+        transform: translateY(-2px);
+      }
+
+      /* Hero Section with 3D Perspective */
+      .hero {
+        padding: 200px 0 150px;
+        text-align: center;
+        position: relative;
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        perspective: 1000px;
+      }
+
+      .hero-content {
+        max-width: 1000px;
+        margin: 0 auto;
+        position: relative;
+        z-index: 1;
+        transform-style: preserve-3d;
+      }
+
+      .hero-badge {
+        display: inline-block;
+        padding: 0.6rem 2rem;
+        background: rgba(255, 140, 0, 0.1);
+        border: 2px solid rgba(255, 140, 0, 0.3);
+        border-radius: 50px;
+        font-size: 0.9rem;
+        color: #ff8c00;
+        margin-bottom: 2.5rem;
+        backdrop-filter: blur(10px);
+        animation: badgeFloat 4s ease-in-out infinite;
+        letter-spacing: 2px;
+        font-weight: 600;
+        box-shadow: 0 0 30px rgba(255, 140, 0, 0.3);
+      }
+
+      @keyframes badgeFloat {
+        0%,
+        100% {
+          transform: translateY(0) rotateX(0deg);
+        }
+        50% {
+          transform: translateY(-15px) rotateX(5deg);
+        }
+      }
+
+      .hero-title {
+        font-family: "Playfair Display", serif;
+        font-size: 5.5rem;
+        font-weight: 900;
+        line-height: 1.1;
+        margin-bottom: 2rem;
+        background: linear-gradient(
+          135deg,
+          #ffffff 0%,
+          #ff8c00 25%,
+          #ff69b4 50%,
+          #ba55d3 75%,
+          #ffffff 100%
+        );
+        background-size: 300% 300%;
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        animation: titleGradient 8s ease infinite;
+        letter-spacing: -3px;
+        position: relative;
+      }
+
+      .hero-title::after {
+        content: attr(data-text);
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: -1;
+        filter: blur(30px);
+        opacity: 0.5;
+        animation: titleGradient 8s ease infinite;
+      }
+
+      @keyframes titleGradient {
+        0%,
+        100% {
+          background-position: 0% 50%;
+        }
+        50% {
+          background-position: 100% 50%;
+        }
+      }
+
+      .hero-subtitle {
+        font-size: 1.6rem;
+        color: #b0b0ff;
+        margin-bottom: 3rem;
+        line-height: 1.8;
+        max-width: 800px;
+        margin-left: auto;
+        margin-right: auto;
+        font-weight: 400;
+      }
+
+      .hero-cta {
+        display: inline-flex;
+        gap: 1.5rem;
+        flex-wrap: wrap;
+        justify-content: center;
+      }
+
+      .cta-button {
+        padding: 1.2rem 3rem;
+        border: none;
+        border-radius: 50px;
+        font-size: 1.1rem;
+        font-weight: 700;
+        cursor: pointer;
+        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        position: relative;
+        overflow: hidden;
+        text-decoration: none;
+        display: inline-block;
+      }
+
+      .cta-primary {
+        background: linear-gradient(135deg, #ff8c00 0%, #ff69b4 100%);
+        color: #ffffff;
+        box-shadow: 0 10px 40px rgba(255, 140, 0, 0.4);
+      }
+
+      .cta-primary::before {
+        content: "";
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 0;
+        height: 0;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.5);
+        transform: translate(-50%, -50%);
+        transition:
+          width 0.6s,
+          height 0.6s;
+      }
+
+      .cta-primary:hover::before {
+        width: 400px;
+        height: 400px;
+      }
+
+      .cta-primary:hover {
+        transform: translateY(-5px) scale(1.05);
+        box-shadow: 0 15px 60px rgba(255, 140, 0, 0.6);
+      }
+
+      .cta-secondary {
+        background: transparent;
+        color: #ff8c00;
+        border: 2px solid #ff8c00;
+        box-shadow: 0 0 20px rgba(255, 140, 0, 0.2);
+      }
+
+      .cta-secondary:hover {
+        background: rgba(255, 140, 0, 0.1);
+        transform: translateY(-5px);
+        box-shadow: 0 15px 60px rgba(255, 140, 0, 0.4);
+      }
+
+      .cta-button span {
+        position: relative;
+        z-index: 1;
+      }
+
+      /* Floating 3D Elements */
+      .floating-shapes {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        top: 0;
+        left: 0;
+        pointer-events: none;
+        z-index: 0;
+      }
+
+      .shape {
+        position: absolute;
+        opacity: 0.15;
+        animation: float3D 20s infinite;
+      }
+
+      .shape-1 {
+        top: 10%;
+        left: 5%;
+        width: 150px;
+        height: 150px;
+        background: linear-gradient(135deg, #ff8c00, #ff69b4);
+        border-radius: 30% 70% 70% 30% / 30% 30% 70% 70%;
+        animation-delay: 0s;
+        filter: blur(40px);
+      }
+
+      .shape-2 {
+        top: 60%;
+        right: 10%;
+        width: 200px;
+        height: 200px;
+        background: linear-gradient(135deg, #ff69b4, #ba55d3);
+        border-radius: 63% 37% 54% 46% / 55% 48% 52% 45%;
+        animation-delay: 5s;
+        filter: blur(50px);
+      }
+
+      .shape-3 {
+        bottom: 10%;
+        left: 15%;
+        width: 180px;
+        height: 180px;
+        background: linear-gradient(135deg, #ba55d3, #ff8c00);
+        border-radius: 40% 60% 60% 40% / 60% 30% 70% 40%;
+        animation-delay: 10s;
+        filter: blur(45px);
+      }
+
+      @keyframes float3D {
+        0%,
+        100% {
+          transform: translate(0, 0) rotate(0deg) scale(1);
+        }
+        25% {
+          transform: translate(50px, -50px) rotate(90deg) scale(1.1);
+        }
+        50% {
+          transform: translate(-30px, 30px) rotate(180deg) scale(0.9);
+        }
+        75% {
+          transform: translate(30px, 50px) rotate(270deg) scale(1.05);
+        }
+      }
+
+      /* Features Section */
+      .features {
+        padding: 120px 0;
+        position: relative;
+      }
+
+      .section-header {
+        text-align: center;
+        margin-bottom: 5rem;
+      }
+
+      .section-badge {
+        display: inline-block;
+        padding: 0.5rem 1.5rem;
+        background: rgba(255, 140, 0, 0.1);
+        border: 1px solid rgba(255, 140, 0, 0.3);
+        border-radius: 50px;
+        font-size: 0.85rem;
+        color: #ff8c00;
+        margin-bottom: 1.5rem;
+        letter-spacing: 2px;
+        font-weight: 600;
+      }
+
+      .section-title {
+        font-family: "Playfair Display", serif;
+        font-size: 4rem;
+        font-weight: 900;
+        margin-bottom: 1.5rem;
+        background: linear-gradient(
+          135deg,
+          #ffffff 0%,
+          #ff8c00 50%,
+          #ff69b4 100%
+        );
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        letter-spacing: -2px;
+      }
+
+      .section-subtitle {
+        font-size: 1.4rem;
+        color: #b0b0ff;
+        max-width: 700px;
+        margin: 0 auto;
+      }
+
+      .features-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+        gap: 3rem;
+        margin-top: 5rem;
+      }
+
+      .feature-card {
+        background: rgba(255, 140, 0, 0.03);
+        border: 1px solid rgba(255, 140, 0, 0.2);
+        border-radius: 30px;
+        padding: 3rem;
+        transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        position: relative;
+        overflow: hidden;
+        backdrop-filter: blur(10px);
+      }
+
+      .feature-card::before {
+        content: "";
+        position: absolute;
+        top: -50%;
+        left: -50%;
+        width: 200%;
+        height: 200%;
+        background: conic-gradient(
+          from 0deg,
+          transparent,
+          rgba(255, 140, 0, 0.1),
+          transparent 30%
+        );
+        animation: cardRotate 8s linear infinite;
+        opacity: 0;
+        transition: opacity 0.5s;
+      }
+
+      .feature-card:hover::before {
+        opacity: 1;
+      }
+
+      @keyframes cardRotate {
+        0% {
+          transform: rotate(0deg);
+        }
+        100% {
+          transform: rotate(360deg);
+        }
+      }
+
+      .feature-card::after {
+        content: "";
+        position: absolute;
+        inset: 2px;
+        background: rgba(10, 6, 18, 0.9);
+        border-radius: 28px;
+        z-index: -1;
+      }
+
+      .feature-card:hover {
+        transform: translateY(-15px) scale(1.02);
+        border-color: rgba(255, 140, 0, 0.5);
+        box-shadow: 0 25px 80px rgba(255, 140, 0, 0.3);
+      }
+
+      .feature-icon {
+        font-size: 4rem;
+        margin-bottom: 2rem;
+        display: block;
+        filter: drop-shadow(0 0 20px rgba(255, 140, 0, 0.6));
+        animation: iconFloat 3s ease-in-out infinite;
+      }
+
+      @keyframes iconFloat {
+        0%,
+        100% {
+          transform: translateY(0);
+        }
+        50% {
+          transform: translateY(-10px);
+        }
+      }
+
+      .feature-title {
+        font-family: "Playfair Display", serif;
+        font-size: 1.8rem;
+        color: #ff8c00;
+        margin-bottom: 1rem;
+        font-weight: 700;
+        letter-spacing: 0.5px;
+      }
+
+      .feature-description {
+        color: #b0b0ff;
+        font-size: 1.1rem;
+        line-height: 1.8;
+      }
+
+      /* Gallery Section */
+      .gallery {
+        padding: 120px 0;
+        position: relative;
+      }
+
+      .gallery-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 2rem;
+        margin-top: 5rem;
+      }
+
+      .gallery-item {
+        position: relative;
+        border-radius: 20px;
+        overflow: hidden;
+        aspect-ratio: 1;
+        cursor: pointer;
+        transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+      }
+
+      .gallery-item::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: linear-gradient(
+          135deg,
+          rgba(255, 140, 0, 0.4) 0%,
+          rgba(255, 105, 180, 0.4) 100%
+        );
+        opacity: 0;
+        transition: opacity 0.5s;
+        z-index: 1;
+      }
+
+      .gallery-item:hover::before {
+        opacity: 1;
+      }
+
+      .gallery-item:hover {
+        transform: scale(1.05) translateY(-10px);
+        box-shadow: 0 30px 80px rgba(255, 140, 0, 0.4);
+      }
+
+      .gallery-image {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+      }
+
+      .gallery-item:hover .gallery-image {
+        transform: scale(1.2) rotate(3deg);
+      }
+
+      .gallery-overlay {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        padding: 2rem;
+        background: linear-gradient(to top, rgba(0, 0, 0, 0.9), transparent);
+        transform: translateY(100%);
+        transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        z-index: 2;
+      }
+
+      .gallery-item:hover .gallery-overlay {
+        transform: translateY(0);
+      }
+
+      .gallery-title {
+        font-family: "Playfair Display", serif;
+        color: #ff8c00;
+        font-size: 1.3rem;
+        margin-bottom: 0.5rem;
+        font-weight: 700;
+      }
+
+      .gallery-description {
+        color: #b0b0ff;
+        font-size: 0.95rem;
+      }
+
+      /* Contact Section */
+      .contact {
+        padding: 120px 0;
+        position: relative;
+      }
+
+      .contact-card {
+        max-width: 800px;
+        margin: 0 auto;
+        background: rgba(255, 140, 0, 0.03);
+        border: 1px solid rgba(255, 140, 0, 0.2);
+        padding: 5rem;
+        border-radius: 40px;
+        backdrop-filter: blur(20px);
+        position: relative;
+        overflow: hidden;
+      }
+
+      .contact-card::before {
+        content: "";
+        position: absolute;
+        top: -2px;
+        left: -2px;
+        right: -2px;
+        bottom: -2px;
+        background: linear-gradient(135deg, #ff8c00, #ff69b4, #ba55d3);
+        border-radius: 40px;
+        z-index: -1;
+        opacity: 0.3;
+        animation: borderPulse 3s ease infinite;
+      }
+
+      @keyframes borderPulse {
+        0%,
+        100% {
+          opacity: 0.3;
+        }
+        50% {
+          opacity: 0.6;
+        }
+      }
+
+      .form-group {
+        margin-bottom: 2.5rem;
+      }
+
+      .form-label {
+        display: block;
+        color: #ff8c00;
+        font-weight: 600;
+        margin-bottom: 1rem;
+        font-size: 1rem;
+        letter-spacing: 1px;
+      }
+
+      .form-input,
+      .form-textarea {
+        width: 100%;
+        padding: 1.3rem 1.5rem;
+        background: rgba(10, 6, 18, 0.5);
+        border: 2px solid rgba(255, 140, 0, 0.2);
+        border-radius: 15px;
+        font-family: inherit;
+        font-size: 1.05rem;
+        color: #ffffff;
+        transition: all 0.4s ease;
+      }
+
+      .form-input:focus,
+      .form-textarea:focus {
+        outline: none;
+        border-color: #ff8c00;
+        background: rgba(10, 6, 18, 0.8);
+        box-shadow:
+          0 0 30px rgba(255, 140, 0, 0.3),
+          inset 0 0 20px rgba(255, 140, 0, 0.1);
+        transform: translateY(-2px);
+      }
+
+      .form-textarea {
+        resize: vertical;
+        min-height: 180px;
+      }
+
+      .submit-button {
+        width: 100%;
+        padding: 1.5rem;
+        background: linear-gradient(135deg, #ff8c00 0%, #ff69b4 100%);
+        color: #ffffff;
+        border: none;
+        border-radius: 15px;
+        font-size: 1.2rem;
+        font-weight: 800;
+        cursor: pointer;
+        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        box-shadow: 0 10px 40px rgba(255, 140, 0, 0.4);
+        letter-spacing: 2px;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .submit-button::before {
+        content: "";
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 0;
+        height: 0;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.5);
+        transform: translate(-50%, -50%);
+        transition:
+          width 0.6s,
+          height 0.6s;
+      }
+
+      .submit-button:hover::before {
+        width: 500px;
+        height: 500px;
+      }
+
+      .submit-button:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 15px 60px rgba(255, 140, 0, 0.6);
+      }
+
+      .submit-button span {
+        position: relative;
+        z-index: 1;
+      }
+
+      /* Footer */
+      .footer {
+        background: rgba(10, 6, 18, 0.9);
+        border-top: 1px solid rgba(255, 140, 0, 0.2);
+        padding: 4rem 0 2rem;
+        text-align: center;
+        position: relative;
+      }
+
+      .footer::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 2px;
+        background: linear-gradient(
+          90deg,
+          transparent,
+          #ff8c00,
+          #ff69b4,
+          #ba55d3,
+          transparent
+        );
+        animation: lineMove 3s linear infinite;
+      }
+
+      @keyframes lineMove {
+        0% {
+          transform: translateX(-100%);
+        }
+        100% {
+          transform: translateX(100%);
+        }
+      }
+
+      .footer-content {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 2rem;
+        margin-bottom: 2rem;
+      }
+
+      .footer-logo {
+        font-family: "Playfair Display", serif;
+        font-size: 1.5rem;
+        font-weight: 900;
+        background: linear-gradient(135deg, #ff8c00, #ff69b4);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+      }
+
+      .footer-links {
+        display: flex;
+        gap: 2rem;
+        flex-wrap: wrap;
+      }
+
+      .footer-link {
+        color: #ff8c00;
+        text-decoration: none;
+        transition: all 0.3s ease;
+        font-weight: 600;
+      }
+
+      .footer-link:hover {
+        color: #ff69b4;
+        text-shadow: 0 0 20px rgba(255, 140, 0, 0.6);
+      }
+
+      .footer-social {
+        display: flex;
+        gap: 1rem;
+      }
+
+      .social-link {
+        width: 50px;
+        height: 50px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: rgba(255, 140, 0, 0.1);
+        border: 2px solid rgba(255, 140, 0, 0.3);
+        border-radius: 50%;
+        color: #ff8c00;
+        text-decoration: none;
+        font-size: 1.3rem;
+        transition: all 0.3s ease;
+      }
+
+      .social-link:hover {
+        background: rgba(255, 140, 0, 0.3);
+        border-color: #ff8c00;
+        transform: translateY(-5px) rotate(360deg);
+        box-shadow: 0 10px 30px rgba(255, 140, 0, 0.5);
+      }
+
+      .footer-bottom {
+        padding-top: 2rem;
+        border-top: 1px solid rgba(0, 255, 255, 0.1);
+        color: #8080a0;
+      }
+
+      /* Scroll Indicator */
+      .scroll-indicator {
+        position: fixed;
+        bottom: 3rem;
+        left: 50%;
+        transform: translateX(-50%);
+        animation: scrollBounce 2s infinite;
+        z-index: 100;
+        font-size: 2rem;
+        color: #ff8c00;
+        filter: drop-shadow(0 0 20px rgba(255, 140, 0, 0.8));
+      }
+
+      @keyframes scrollBounce {
+        0%,
+        100% {
+          transform: translateX(-50%) translateY(0);
+        }
+        50% {
+          transform: translateX(-50%) translateY(15px);
+        }
+      }
+
+      /* Responsive Design */
+      @media (max-width: 768px) {
+        .hero-title {
+          font-size: 3rem;
+        }
+
+        .section-title {
+          font-size: 2.5rem;
+        }
+
+        .features-grid,
+        .gallery-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .contact-card {
+          padding: 3rem 2rem;
+        }
+
+        .nav {
+          flex-wrap: wrap;
+          justify-content: center;
+        }
+
+        .footer-content {
+          flex-direction: column;
+          text-align: center;
+        }
+      }
+
+      /* Custom Cursor Effect */
+      .cursor-dot {
+        width: 8px;
+        height: 8px;
+        background: #ff8c00;
+        border-radius: 50%;
+        position: fixed;
+        pointer-events: none;
+        z-index: 9999;
+        transition: transform 0.15s ease;
+        box-shadow: 0 0 20px rgba(255, 140, 0, 0.8);
+      }
+
+      .cursor-outline {
+        width: 30px;
+        height: 30px;
+        border: 2px solid rgba(255, 140, 0, 0.5);
+        border-radius: 50%;
+        position: fixed;
+        pointer-events: none;
+        z-index: 9998;
+        transition: all 0.15s ease;
+      }
+    </style>
+  </head>
+
+  <body>
+    <!-- Animated Canvas Background -->
+    <canvas id="canvas-background"></canvas>
+    <div class="gradient-overlay"></div>
+
+    <!-- Custom Cursor -->
+    <div class="cursor-dot"></div>
+    <div class="cursor-outline"></div>
+
+    <!-- Header -->
+    <header class="header" id="header">
+      <div class="container">
+        <div class="header-content">
+          <div class="logo-section">
+            <div class="logo-text">🐱 PurrfectGallery</div>
+          </div>
+          <nav class="nav">
+            <a href="#home" class="nav-link"><span>Home</span></a>
+            <a href="#features" class="nav-link"><span>About Cats</span></a>
+            <a href="#gallery" class="nav-link"><span>Gallery</span></a>
+            <a href="#contact" class="nav-link"><span>Contact</span></a>
+          </nav>
+        </div>
+      </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section id="home" class="hero">
+      <div class="floating-shapes">
+        <div class="shape shape-1"></div>
+        <div class="shape shape-2"></div>
+        <div class="shape shape-3"></div>
+      </div>
+      <div class="container">
+        <div class="hero-content">
+          <div class="hero-badge">🐾 PREMIUM CAT COLLECTION 🐾</div>
+          <h1 class="hero-title" data-text="Welcome to Purrfect Gallery">
+            Welcome to Purrfect Gallery
+          </h1>
+          <p class="hero-subtitle">
+            Immerse yourself in the most enchanting collection of feline
+            photography. Each image captures the unique personality, grace, and
+            irresistible charm of our beloved cats. Experience cuteness overload
+            with stunning visuals and advanced animations.
+          </p>
+          <div class="hero-cta">
+            <a href="#gallery" class="cta-button cta-primary">
+              <span>Explore Cats</span>
+            </a>
+            <a href="#contact" class="cta-button cta-secondary">
+              <span>Share Your Cat</span>
+            </a>
+          </div>
+        </div>
+      </div>
+      <div class="scroll-indicator">↓</div>
+    </section>
+
+    <!-- Features Section -->
+    <section id="features" class="features">
+      <div class="container">
+        <div class="section-header">
+          <div class="section-badge">WHY CATS ARE AMAZING</div>
+          <h2 class="section-title">Fascinating Feline Facts</h2>
+          <p class="section-subtitle">
+            Discover what makes cats the most incredible companions on Earth
+          </p>
+        </div>
+
+        <div class="features-grid">
+          <div class="feature-card">
+            <span class="feature-icon">😺</span>
+            <h3 class="feature-title">Unique Personalities</h3>
+            <p class="feature-description">
+              Every cat has their own distinct character, from playful and
+              energetic to calm and cuddly. Their individual quirks make them
+              endlessly entertaining and lovable companions.
+            </p>
+          </div>
+
+          <div class="feature-card">
+            <span class="feature-icon">💕</span>
+            <h3 class="feature-title">Unconditional Love</h3>
+            <p class="feature-description">
+              Cats form deep bonds with their humans, showing affection through
+              purrs, head bumps, and gentle kneading. Their love is subtle yet
+              profound, making every moment special.
+            </p>
+          </div>
+
+          <div class="feature-card">
+            <span class="feature-icon">🎨</span>
+            <h3 class="feature-title">Natural Artists</h3>
+            <p class="feature-description">
+              With their graceful movements and photogenic poses, cats are born
+              models. Every stretch, yawn, and playful leap is a work of art
+              waiting to be captured.
+            </p>
+          </div>
+
+          <div class="feature-card">
+            <span class="feature-icon">🧘</span>
+            <h3 class="feature-title">Stress Relief</h3>
+            <p class="feature-description">
+              Studies show that petting a cat can lower stress levels and blood
+              pressure. Their soothing purrs and calming presence create a
+              peaceful atmosphere in any home.
+            </p>
+          </div>
+
+          <div class="feature-card">
+            <span class="feature-icon">🎭</span>
+            <h3 class="feature-title">Natural Entertainers</h3>
+            <p class="feature-description">
+              From chasing laser pointers to squeezing into boxes, cats provide
+              endless entertainment. Their playful antics and curious nature
+              bring joy and laughter daily.
+            </p>
+          </div>
+
+          <div class="feature-card">
+            <span class="feature-icon">👑</span>
+            <h3 class="feature-title">Independent Spirit</h3>
+            <p class="feature-description">
+              Cats maintain their wild elegance while being loving pets. Their
+              self-sufficient nature combined with affectionate moments creates
+              the perfect balance.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Gallery Section -->
+    <section id="gallery" class="gallery">
+      <div class="container">
+        <div class="section-header">
+          <div class="section-badge">CAT COLLECTION</div>
+          <h2 class="section-title">Adorable Feline Gallery</h2>
+          <p class="section-subtitle">
+            A curated collection of the most charming and photogenic cats
+          </p>
+        </div>
+
+        <div class="gallery-grid">
+          <div class="gallery-item">
+            <img src="cat1.jpg" alt="Cute cat" class="gallery-image" loading="lazy" />
+            <div class="gallery-overlay">
+              <h3 class="gallery-title">Cat 1</h3>
+              <p class="gallery-description">Playful and curious companion</p>
+            </div>
+          </div>
+
+          <div class="gallery-item">
+            <img src="cat2.jpg" alt="Gray and white kitten" class="gallery-image" loading="lazy" />
+            <div class="gallery-overlay">
+              <h3 class="gallery-title">Cat 2</h3>
+              <p class="gallery-description">Adorable ball of fluff</p>
+            </div>
+          </div>
+
+          <div class="gallery-item">
+            <img src="cat3.jpg" alt="Cat with blue eyes" class="gallery-image" loading="lazy" />
+            <div class="gallery-overlay">
+              <h3 class="gallery-title">Cat 3</h3>
+              <p class="gallery-description">Elegant and striking</p>
+            </div>
+          </div>
+
+          <div class="gallery-item">
+            <img src="cat4.jpg" alt="Cat portrait" class="gallery-image" loading="lazy" />
+            <div class="gallery-overlay">
+              <h3 class="gallery-title">Cat 4</h3>
+              <p class="gallery-description">Mysterious and captivating</p>
+            </div>
+          </div>
+
+          <div class="gallery-item">
+            <img src="cat5.jpg" alt="Fluffy cat" class="gallery-image" loading="lazy" />
+            <div class="gallery-overlay">
+              <h3 class="gallery-title">Cat 5</h3>
+              <p class="gallery-description">Luxuriously fluffy and regal</p>
+            </div>
+          </div>
+
+          <div class="gallery-item">
+            <img src="cat6.jpg" alt="Cat relaxing" class="gallery-image" loading="lazy" />
+            <div class="gallery-overlay">
+              <h3 class="gallery-title">Cat 6</h3>
+              <p class="gallery-description">The art of cat relaxation</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" class="contact">
+      <div class="container">
+        <div class="section-header">
+          <div class="section-badge">GET IN TOUCH</div>
+          <h2 class="section-title">Share Your Cat Love</h2>
+          <p class="section-subtitle">
+            We'd love to hear from fellow cat enthusiasts and see your furry
+            friends
+          </p>
+        </div>
+
+        <div class="contact-card">
+          <form id="contactForm">
+            <div class="form-group">
+              <label for="name" class="form-label">Name</label>
+              <input
+                type="text"
+                id="name"
+                name="name"
+                class="form-input"
+                placeholder="Your name"
+                required
+              />
+            </div>
+
+            <div class="form-group">
+              <label for="email" class="form-label">Email</label>
+              <input
+                type="email"
+                id="email"
+                name="email"
+                class="form-input"
+                placeholder="your.email@example.com"
+                required
+              />
+            </div>
+
+            <div class="form-group">
+              <label for="message" class="form-label">Message</label>
+              <textarea
+                id="message"
+                name="message"
+                class="form-textarea"
+                placeholder="Share your cat stories, photos, or just say hello to our feline community..."
+                required
+              ></textarea>
+            </div>
+
+            <button type="submit" class="submit-button">
+              <span>Send Message 🐱</span>
+            </button>
+          </form>
+        </div>
+      </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+      <div class="container">
+        <div class="footer-content">
+          <div class="footer-logo">🐱 PurrfectGallery</div>
+          <div class="footer-links">
+            <a href="#home" class="footer-link">Home</a>
+            <a href="#features" class="footer-link">About Cats</a>
+            <a href="#gallery" class="footer-link">Gallery</a>
+            <a href="#contact" class="footer-link">Contact</a>
+          </div>
+          <div class="footer-social">
+            <a href="#" class="social-link" aria-label="Instagram">📷</a>
+            <a href="#" class="social-link" aria-label="Facebook">📘</a>
+            <a href="#" class="social-link" aria-label="Twitter">🐦</a>
+            <a href="#" class="social-link" aria-label="Pinterest">📌</a>
+          </div>
+        </div>
+        <div class="footer-bottom">
+          <p>
+            © 2025 PurrfectGallery. Made with love for cat lovers everywhere 🐾
+          </p>
+        </div>
+      </div>
+    </footer>
+
+    <script>
+      // Canvas Particle System
+      const canvas = document.getElementById("canvas-background");
+      const ctx = canvas.getContext("2d");
+
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+
+      window.addEventListener("resize", () => {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+      });
+
+      class Particle {
+        constructor() {
+          this.x = Math.random() * canvas.width;
+          this.y = Math.random() * canvas.height;
+          this.size = Math.random() * 2 + 0.5;
+          this.speedX = Math.random() * 0.5 - 0.25;
+          this.speedY = Math.random() * 0.5 - 0.25;
+          this.color = `rgba(${Math.random() > 0.5 ? "255, 140, 0" : "255, 105, 180"}, ${Math.random() * 0.5 + 0.3})`;
+        }
+
+        update() {
+          this.x += this.speedX;
+          this.y += this.speedY;
+
+          if (this.x > canvas.width) this.x = 0;
+          if (this.x < 0) this.x = canvas.width;
+          if (this.y > canvas.height) this.y = 0;
+          if (this.y < 0) this.y = canvas.height;
+        }
+
+        draw() {
+          ctx.fillStyle = this.color;
+          ctx.beginPath();
+          ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+          ctx.fill();
+        }
+      }
+
+      const particles = [];
+      for (let i = 0; i < 150; i++) {
+        particles.push(new Particle());
+      }
+
+      function connectParticles() {
+        for (let i = 0; i < particles.length; i++) {
+          for (let j = i + 1; j < particles.length; j++) {
+            const dx = particles[i].x - particles[j].x;
+            const dy = particles[i].y - particles[j].y;
+            const distance = Math.sqrt(dx * dx + dy * dy);
+
+            if (distance < 100) {
+              ctx.strokeStyle = `rgba(255, 140, 0, ${1 - distance / 100})`;
+              ctx.lineWidth = 0.5;
+              ctx.beginPath();
+              ctx.moveTo(particles[i].x, particles[i].y);
+              ctx.lineTo(particles[j].x, particles[j].y);
+              ctx.stroke();
+            }
+          }
+        }
+      }
+
+      function animate() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        particles.forEach((particle) => {
+          particle.update();
+          particle.draw();
+        });
+
+        connectParticles();
+        requestAnimationFrame(animate);
+      }
+
+      animate();
+
+      // Header scroll effect
+      const header = document.getElementById("header");
+      window.addEventListener("scroll", () => {
+        if (window.scrollY > 50) {
+          header.classList.add("scrolled");
+        } else {
+          header.classList.remove("scrolled");
+        }
+      });
+
+      // Custom cursor
+      const cursorDot = document.querySelector(".cursor-dot");
+      const cursorOutline = document.querySelector(".cursor-outline");
+
+      window.addEventListener("mousemove", (e) => {
+        cursorDot.style.left = e.clientX + "px";
+        cursorDot.style.top = e.clientY + "px";
+
+        cursorOutline.style.left = e.clientX - 15 + "px";
+        cursorOutline.style.top = e.clientY - 15 + "px";
+      });
+
+      // Form submission
+      const contactForm = document.getElementById("contactForm");
+      contactForm.addEventListener("submit", (e) => {
+        e.preventDefault();
+        alert(
+          "🐱 Thank you for your message! We love hearing from fellow cat enthusiasts. We'll get back to you soon!",
+        );
+        contactForm.reset();
+      });
+
+      // Smooth scroll
+      document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
+        anchor.addEventListener("click", function (e) {
+          e.preventDefault();
+          const target = document.querySelector(this.getAttribute("href"));
+          if (target) {
+            target.scrollIntoView({
+              behavior: "smooth",
+              block: "start",
+            });
+          }
+        });
+      });
+
+      // Hide scroll indicator after scrolling
+      const scrollIndicator = document.querySelector(".scroll-indicator");
+      window.addEventListener("scroll", () => {
+        if (window.scrollY > 300) {
+          scrollIndicator.style.opacity = "0";
+        } else {
+          scrollIndicator.style.opacity = "1";
+        }
+      });
+
+      // Parallax effect for floating shapes
+      window.addEventListener("scroll", () => {
+        const scrolled = window.pageYOffset;
+        const shapes = document.querySelectorAll(".shape");
+        shapes.forEach((shape, index) => {
+          const speed = 0.2 + index * 0.1;
+          shape.style.transform = `translateY(${scrolled * speed}px)`;
+        });
+      });
+    </script>
+  </body>
+</html>
