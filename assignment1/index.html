@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Photo Editor</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Photo Editor</h1>
+            <p>Apply filters and edit your images</p>
+        </div>
+
+        <div class="main-content">
+            <div class="sidebar">
+                <div class="filter-section">
+                    <h3>Filters</h3>
+                    <div class="filter-buttons">
+                        <button class="filter-btn active" data-filter="brightness">Brightness</button>
+                        <button class="filter-btn" data-filter="saturation">Saturation</button>
+                        <button class="filter-btn" data-filter="inversion">Inversion</button>
+                        <button class="filter-btn" data-filter="grayscale">Grayscale</button>
+                    </div>
+                </div>
+
+                <div class="slider-container" id="sliderContainer">
+                    <div class="slider-label">
+                        <span id="filterName">Brightness</span>
+                        <span id="filterValue">100%</span>
+                    </div>
+                    <input type="range" class="slider" id="filterSlider" min="0" max="200" value="100">
+                </div>
+
+                <div class="rotate-flip-section">
+                    <h3>Rotate & Flip</h3>
+                    <div class="rotate-flip-buttons">
+                        <button class="icon-btn" id="rotateLeft" title="Rotate Left">↺</button>
+                        <button class="icon-btn" id="rotateRight" title="Rotate Right">↻</button>
+                        <button class="icon-btn" id="flipHorizontal" title="Flip Horizontal">⇄</button>
+                        <button class="icon-btn" id="flipVertical" title="Flip Vertical">⇅</button>
+                    </div>
+                </div>
+
+                <div class="slider-container">
+                    <div class="slider-label">
+                        <span>Blur</span>
+                        <span id="blurValue">0px</span>
+                    </div>
+                    <input type="range" class="slider" id="blurSlider" min="0" max="20" value="0">
+                </div>
+
+                <div class="slider-container">
+                    <div class="slider-label">
+                        <span>Rotate</span>
+                        <span id="rotateValue">0deg</span>
+                    </div>
+                    <input type="range" class="slider" id="rotateSlider" min="0" max="360" value="0">
+                </div>
+
+                <div class="slider-container">
+                    <div class="slider-label">
+                        <span>Sepia</span>
+                        <span id="sepiaValue">0%</span>
+                    </div>
+                    <input type="range" class="slider" id="sepiaSlider" min="0" max="100" value="0">
+                </div>
+
+                <div class="undo-redo-section">
+                    <h3>Undo / Redo</h3>
+                    <div class="undo-redo-buttons">
+                        <button class="btn btn-secondary" id="undoBtn" disabled>← Undo</button>
+                        <button class="btn btn-secondary" id="redoBtn" disabled>Redo →</button>
+                    </div>
+                </div>
+
+                <div class="history-panel">
+                    <h4>History</h4>
+                    <div id="historyList"></div>
+                </div>
+            </div>
+
+            <div class="canvas-area">
+                <div class="canvas-wrapper">
+                    <canvas id="canvas"></canvas>
+                    <div class="placeholder" id="placeholder">
+                        <div class="placeholder-icon">🖼️</div>
+                        <p>Click "Choose Image" to get started</p>
+                    </div>
+                </div>
+
+                <div class="button-group">
+                    <button class="btn btn-secondary" id="chooseBtn">Choose Image</button>
+                    <button class="btn btn-primary" id="saveBtn" disabled>Save Image</button>
+                    <button class="btn btn-danger" id="resetBtn" disabled>Reset Filters</button>
+                </div>
+
+                <input type="file" id="fileInput" accept="image/*">
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
