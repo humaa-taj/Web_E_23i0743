@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Dashboard</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: #f0f2f5;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+    }
+    .card {
+      background: white;
+      padding: 50px 40px;
+      border-radius: 12px;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.1);
+      width: 100%;
+      max-width: 440px;
+      text-align: center;
+    }
+    .avatar {
+      width: 72px;
+      height: 72px;
+      background: #4361ee;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 32px;
+      margin: 0 auto 20px;
+      color: white;
+    }
+    h2 {
+      color: #1a1a2e;
+      font-size: 24px;
+      margin-bottom: 8px;
+    }
+    .username {
+      color: #4361ee;
+      font-weight: 700;
+      font-size: 22px;
+    }
+    p {
+      color: #666;
+      margin: 12px 0 32px;
+      font-size: 15px;
+    }
+    button {
+      padding: 13px 36px;
+      background: #e74c3c;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    button:hover { background: #c0392b; }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <div class="avatar">👤</div>
+    <h2>Welcome back,</h2>
+    <div class="username" id="username">...</div>
+    <p>You are successfully logged in.</p>
+    <button onclick="logout()">Logout</button>
+  </div>
+
+  <script>
+    // Fetch the logged-in username from server
+    fetch("/session-user")
+      .then((res) => {
+        if (!res.ok) window.location.href = "/";
+        return res.json();
+      })
+      .then((data) => {
+        document.getElementById("username").textContent = data.username;
+      })
+      .catch(() => {
+        window.location.href = "/";
+      });
+
+    function logout() {
+      window.location.href = "/logout";
+    }
+  </script>
+</body>
+</html>
