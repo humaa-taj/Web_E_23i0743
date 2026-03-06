@@ -14,7 +14,7 @@ app.use(
     secret: "secret",
     resave: false,
     saveUninitialized: true,
-  })
+  }),
 );
 
 mongoose
@@ -54,7 +54,10 @@ app.post("/register", async (req, res) => {
     const result = await user.register();
     res.json({ success: true, message: result });
   } catch (err) {
-    res.json({ success: false, message: "Registration failed: " + err.message });
+    res.json({
+      success: false,
+      message: "Registration failed: " + err.message,
+    });
   }
 });
 
