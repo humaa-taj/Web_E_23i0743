@@ -53,3 +53,9 @@ function auth(req, res, next) {
 app.get("/dashboard", auth, (req, res) => {
   res.send("Welcome " + req.session.user);
 });
+
+app.get("/logout", (req, res) => {
+  req.session.destroy(() => {
+    res.send("Logout successful");
+  });
+});
