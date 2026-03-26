@@ -1,0 +1,719 @@
+/* =============================================
+   CRICKET BLITZ - CS-4032 Assignment 02
+   Student: 23i-0743-C
+   ============================================= */
+
+@import url('https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;600;700&family=Orbitron:wght@400;700;900&family=Exo+2:ital,wght@0,300;0,400;0,600;1,300&display=swap');
+
+/* ── CSS Variables ── */
+:root {
+  --green-dark: #0d2818;
+  --green-mid: #1a4731;
+  --green-light: #2d8653;
+  --gold: #f0c040;
+  --gold-dark: #c8922a;
+  --red: #e63946;
+  --blue-dark: #0a1628;
+  --blue-mid: #16213e;
+  --blue-accent: #457b9d;
+  --text-bright: #f0ede0;
+  --text-muted: #a0967e;
+  --panel-bg: rgba(10, 22, 40, 0.92);
+  --panel-border: rgba(240, 192, 64, 0.25);
+  --aggressive: #e63946;
+  --defensive: #457b9d;
+  --radius: 10px;
+  --shadow: 0 8px 32px rgba(0, 0, 0, 0.6);
+}
+
+/* ── Reset ── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  background: radial-gradient(ellipse at top, #0d2818 0%, #050d15 100%);
+  color: var(--text-bright);
+  font-family: 'Exo 2', sans-serif;
+  min-height: 100vh;
+}
+
+/* ── App container ── */
+.app-container {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 12px 24px;
+}
+
+/* ── Header ── */
+.game-header {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 14px 0 10px;
+  border-bottom: 1px solid var(--panel-border);
+  margin-bottom: 16px;
+}
+.header-logo { font-size: 2.2rem; }
+.header-title {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 2rem;
+  font-weight: 900;
+  background: linear-gradient(90deg, var(--gold) 0%, #fff8dc 50%, var(--gold) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  letter-spacing: 3px;
+  text-shadow: none;
+}
+.header-sub {
+  margin-left: auto;
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  font-family: 'Rajdhani', sans-serif;
+  letter-spacing: 1px;
+}
+
+/* ── Main layout ── */
+.game-main {
+  display: grid;
+  grid-template-columns: 1fr 380px;
+  gap: 16px;
+  flex: 1;
+}
+
+/* ── Field section ── */
+.field-section {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.field-wrapper {
+  position: relative;
+  border-radius: 14px;
+  overflow: hidden;
+  border: 2px solid var(--panel-border);
+  box-shadow: var(--shadow), 0 0 40px rgba(45, 134, 83, 0.15);
+  flex: 1;
+  min-height: 300px;
+  background: #1a4731;
+}
+
+/* ── Result flash ── */
+.result-flash {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-family: 'Orbitron', sans-serif;
+  font-size: 3rem;
+  font-weight: 900;
+  pointer-events: none;
+  animation: flashIn 0.25s ease-out;
+  z-index: 10;
+  text-align: center;
+  white-space: nowrap;
+  padding: 10px 24px;
+  border-radius: 8px;
+}
+.flash-wicket {
+  color: var(--red);
+  background: rgba(230, 57, 70, 0.15);
+  border: 2px solid var(--red);
+  text-shadow: 0 0 30px var(--red);
+}
+.flash-runs {
+  color: var(--gold);
+  background: rgba(240, 192, 64, 0.15);
+  border: 2px solid var(--gold);
+  text-shadow: 0 0 30px var(--gold);
+}
+@keyframes flashIn {
+  from { opacity: 0; transform: translate(-50%, -50%) scale(0.6); }
+  to   { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+}
+
+/* ── Commentary ── */
+.commentary-box {
+  background: var(--panel-bg);
+  border: 1px solid var(--panel-border);
+  border-radius: var(--radius);
+  padding: 10px 16px;
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  min-height: 52px;
+}
+.commentary-icon { font-size: 1.2rem; flex-shrink: 0; }
+.commentary-text {
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 1rem;
+  color: var(--text-bright);
+  letter-spacing: 0.3px;
+  line-height: 1.5;
+}
+
+/* ── Scoreboard ── */
+.scoreboard {
+  background: var(--panel-bg);
+  border: 1px solid var(--panel-border);
+  border-radius: var(--radius);
+  padding: 14px 18px;
+  box-shadow: var(--shadow);
+}
+.scoreboard-header {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 10px;
+}
+.team-name {
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  letter-spacing: 2px;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+.main-score {
+  display: flex;
+  align-items: baseline;
+  gap: 2px;
+}
+.runs-display {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 2.4rem;
+  font-weight: 900;
+  color: var(--gold);
+  line-height: 1;
+}
+.wickets-display {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 1.6rem;
+  color: var(--red);
+}
+.overs-display {
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 1rem;
+  color: var(--text-muted);
+  margin-left: auto;
+}
+
+.scoreboard-stats {
+  display: flex;
+  gap: 16px;
+  border-top: 1px solid var(--panel-border);
+  padding-top: 10px;
+}
+.stat-item { text-align: center; flex: 1; }
+.stat-val {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--text-bright);
+}
+.stat-lbl {
+  font-size: 0.65rem;
+  color: var(--text-muted);
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  margin-top: 2px;
+}
+
+.last-outcome {
+  margin-top: 10px;
+  text-align: center;
+  font-family: 'Orbitron', sans-serif;
+  font-size: 1rem;
+  font-weight: 700;
+  padding: 6px 14px;
+  border-radius: 6px;
+  display: inline-block;
+  animation: slideDown 0.3s ease;
+}
+.last-outcome.wicket { color: var(--red); background: rgba(230,57,70,0.12); border: 1px solid var(--red); }
+.last-outcome.runs   { color: var(--gold); background: rgba(240,192,64,0.12); border: 1px solid var(--gold); }
+@keyframes slideDown {
+  from { opacity: 0; transform: translateY(-8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ── Controls Section ── */
+.controls-section {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* ── Panel common ── */
+.panel-title {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 0.65rem;
+  letter-spacing: 2px;
+  color: var(--gold);
+  margin-bottom: 10px;
+  font-weight: 700;
+}
+
+/* ── Style Panel ── */
+.style-panel {
+  background: var(--panel-bg);
+  border: 1px solid var(--panel-border);
+  border-radius: var(--radius);
+  padding: 14px;
+  box-shadow: var(--shadow);
+}
+.style-buttons {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+.style-btn {
+  background: rgba(255,255,255,0.04);
+  border: 2px solid rgba(255,255,255,0.1);
+  border-radius: 8px;
+  padding: 12px 10px;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  transition: all 0.2s ease;
+  color: var(--text-bright);
+  position: relative;
+  overflow: hidden;
+}
+.style-btn::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+.style-btn.aggressive::before { background: linear-gradient(135deg, rgba(230,57,70,0.15), transparent); }
+.style-btn.defensive::before  { background: linear-gradient(135deg, rgba(69,123,157,0.15), transparent); }
+
+.style-btn:hover:not(:disabled)::before,
+.style-btn.selected::before { opacity: 1; }
+
+.style-btn.aggressive:hover:not(:disabled),
+.style-btn.aggressive.selected {
+  border-color: var(--red);
+  box-shadow: 0 0 20px rgba(230,57,70,0.3);
+}
+.style-btn.defensive:hover:not(:disabled),
+.style-btn.defensive.selected {
+  border-color: var(--blue-accent);
+  box-shadow: 0 0 20px rgba(69,123,157,0.3);
+}
+.style-btn.locked {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+.style-icon { font-size: 1.5rem; }
+.style-name {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 1px;
+}
+.style-desc { font-size: 0.68rem; color: var(--text-muted); }
+.style-stats {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  font-size: 0.62rem;
+  color: var(--text-muted);
+  margin-top: 4px;
+}
+
+/* ── Probability Table ── */
+.prob-table {
+  background: var(--panel-bg);
+  border: 1px solid var(--panel-border);
+  border-radius: var(--radius);
+  padding: 14px;
+  box-shadow: var(--shadow);
+}
+.prob-table table {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 0.85rem;
+}
+.prob-table th {
+  color: var(--text-muted);
+  font-size: 0.65rem;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  padding: 4px 6px;
+  border-bottom: 1px solid var(--panel-border);
+  text-align: left;
+}
+.prob-table td {
+  padding: 4px 6px;
+  border-bottom: 1px solid rgba(255,255,255,0.04);
+  vertical-align: middle;
+}
+.prob-table .total-row td {
+  border-top: 1px solid var(--panel-border);
+  border-bottom: none;
+  color: var(--gold);
+  padding-top: 6px;
+}
+.prob-dot {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  margin-right: 6px;
+  vertical-align: middle;
+}
+
+/* ── Power Bar ── */
+.powerbar-container {
+  background: var(--panel-bg);
+  border: 1px solid var(--panel-border);
+  border-radius: var(--radius);
+  padding: 14px;
+  box-shadow: var(--shadow);
+}
+.powerbar-label {
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 0.75rem;
+  color: var(--gold);
+  letter-spacing: 1.5px;
+  margin-bottom: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+.powerbar-wrapper {
+  position: relative;
+  margin-bottom: 24px;
+}
+.powerbar-track {
+  display: flex;
+  height: 44px;
+  border-radius: 8px;
+  overflow: visible;
+  border: 2px solid rgba(255,255,255,0.15);
+  position: relative;
+}
+.powerbar-segment {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  transition: filter 0.15s;
+  min-width: 0;
+  overflow: hidden;
+}
+.powerbar-segment:first-child { border-radius: 6px 0 0 6px; }
+.powerbar-segment:last-child  { border-radius: 0 6px 6px 0; }
+.segment-label {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: rgba(255,255,255,0.9);
+  line-height: 1;
+}
+.segment-prob {
+  font-size: 0.55rem;
+  color: rgba(255,255,255,0.65);
+}
+
+/* Slider */
+.powerbar-slider {
+  position: absolute;
+  top: -8px;
+  width: 3px;
+  height: calc(100% + 16px);
+  background: white;
+  border-radius: 2px;
+  transform: translateX(-50%);
+  box-shadow: 0 0 10px white, 0 0 20px rgba(255,255,255,0.5);
+  z-index: 10;
+  pointer-events: none;
+  transition: left 0s; /* no CSS transition — JS drives it */
+}
+.powerbar-slider::before {
+  content: '▼';
+  position: absolute;
+  top: -14px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 0.7rem;
+  color: white;
+}
+
+/* Scale ticks */
+.powerbar-scale {
+  position: relative;
+  height: 22px;
+  margin-top: 4px;
+}
+.scale-tick {
+  position: absolute;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.tick-line {
+  width: 1px;
+  height: 6px;
+  background: var(--text-muted);
+}
+.tick-val {
+  font-size: 0.55rem;
+  color: var(--text-muted);
+  font-family: 'Rajdhani', sans-serif;
+  white-space: nowrap;
+}
+
+.slider-readout {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 0.7rem;
+  color: var(--text-muted);
+  margin-bottom: 10px;
+  text-align: center;
+}
+
+/* Shoot button */
+.shoot-btn {
+  width: 100%;
+  padding: 13px;
+  border-radius: 8px;
+  border: none;
+  font-family: 'Orbitron', sans-serif;
+  font-size: 0.85rem;
+  font-weight: 700;
+  letter-spacing: 2px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+.shoot-btn.active {
+  background: linear-gradient(135deg, var(--gold-dark), var(--gold));
+  color: var(--blue-dark);
+  box-shadow: 0 4px 20px rgba(240,192,64,0.4);
+  animation: pulse 1s infinite;
+}
+.shoot-btn.active:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 30px rgba(240,192,64,0.6);
+}
+.shoot-btn.disabled {
+  background: rgba(255,255,255,0.08);
+  color: var(--text-muted);
+  cursor: not-allowed;
+}
+@keyframes pulse {
+  0%, 100% { box-shadow: 0 4px 20px rgba(240,192,64,0.4); }
+  50% { box-shadow: 0 4px 30px rgba(240,192,64,0.7); }
+}
+
+/* ── Instructions ── */
+.instructions-panel {
+  background: var(--panel-bg);
+  border: 1px solid var(--panel-border);
+  border-radius: var(--radius);
+  padding: 14px;
+}
+.how-to-play {
+  list-style: decimal;
+  padding-left: 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.how-to-play li {
+  font-size: 0.82rem;
+  color: var(--text-bright);
+  font-family: 'Rajdhani', sans-serif;
+  line-height: 1.4;
+}
+.rules-summary {
+  display: flex;
+  gap: 12px;
+  margin-top: 12px;
+  padding-top: 10px;
+  border-top: 1px solid var(--panel-border);
+  justify-content: center;
+}
+.rules-summary span {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 0.65rem;
+  color: var(--gold);
+  background: rgba(240,192,64,0.1);
+  border: 1px solid rgba(240,192,64,0.2);
+  padding: 4px 10px;
+  border-radius: 20px;
+}
+
+/* ── Phase indicator ── */
+.phase-indicator {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  justify-content: center;
+  padding: 8px;
+  background: var(--panel-bg);
+  border-radius: var(--radius);
+  border: 1px solid var(--panel-border);
+}
+.phase-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.15);
+  transition: all 0.3s;
+  flex-shrink: 0;
+}
+.phase-dot.active {
+  background: var(--gold);
+  box-shadow: 0 0 8px var(--gold);
+}
+.phase-indicator span {
+  font-size: 0.62rem;
+  color: var(--text-muted);
+  font-family: 'Rajdhani', sans-serif;
+  letter-spacing: 0.5px;
+}
+
+/* ── Mini restart ── */
+.mini-restart-btn {
+  background: transparent;
+  border: 1px solid rgba(255,255,255,0.15);
+  color: var(--text-muted);
+  border-radius: var(--radius);
+  padding: 8px;
+  font-family: 'Exo 2', sans-serif;
+  font-size: 0.8rem;
+  cursor: pointer;
+  transition: all 0.2s;
+  width: 100%;
+}
+.mini-restart-btn:hover {
+  border-color: var(--gold);
+  color: var(--gold);
+  background: rgba(240,192,64,0.06);
+}
+
+/* ── Game Over Overlay ── */
+.gameover-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.85);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+  backdrop-filter: blur(6px);
+  animation: fadeIn 0.4s ease;
+}
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+.gameover-card {
+  background: linear-gradient(135deg, #0a1628 0%, #0d2818 100%);
+  border: 2px solid var(--gold);
+  border-radius: 16px;
+  padding: 36px 40px;
+  min-width: 360px;
+  max-width: 480px;
+  text-align: center;
+  box-shadow: 0 0 60px rgba(240,192,64,0.2), var(--shadow);
+  animation: slideUp 0.4s ease;
+}
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(30px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.gameover-title {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 1.4rem;
+  font-weight: 900;
+  color: var(--gold);
+  letter-spacing: 3px;
+  margin-bottom: 6px;
+}
+.gameover-reason {
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 1rem;
+  color: var(--text-muted);
+  margin-bottom: 24px;
+  letter-spacing: 2px;
+}
+.gameover-scorecard {
+  background: rgba(255,255,255,0.04);
+  border-radius: 10px;
+  padding: 16px;
+  margin-bottom: 20px;
+  border: 1px solid var(--panel-border);
+}
+.gc-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 7px 0;
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 0.9rem;
+  color: var(--text-muted);
+}
+.gc-row:last-child { border-bottom: none; }
+.gc-val {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 0.85rem;
+  color: var(--text-bright);
+}
+.gc-val.highlight {
+  color: var(--gold);
+  font-size: 1.3rem;
+  font-weight: 900;
+}
+.gameover-rating {
+  font-size: 1.1rem;
+  margin-bottom: 24px;
+  color: var(--text-bright);
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 1.1rem;
+}
+.restart-btn {
+  background: linear-gradient(135deg, var(--gold-dark), var(--gold));
+  color: var(--blue-dark);
+  border: none;
+  border-radius: 10px;
+  padding: 14px 32px;
+  font-family: 'Orbitron', sans-serif;
+  font-size: 0.85rem;
+  font-weight: 700;
+  letter-spacing: 2px;
+  cursor: pointer;
+  transition: all 0.2s;
+  box-shadow: 0 4px 20px rgba(240,192,64,0.3);
+}
+.restart-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 30px rgba(240,192,64,0.5);
+}
+
+/* ── Responsive ── */
+@media (max-width: 900px) {
+  .game-main {
+    grid-template-columns: 1fr;
+  }
+  .header-title { font-size: 1.4rem; }
+  .controls-section { order: -1; }
+  .field-wrapper { min-height: 250px; }
+}
+
+@media (max-width: 500px) {
+  .app-container { padding: 0 8px 16px; }
+  .gameover-card { padding: 24px 20px; min-width: unset; margin: 16px; }
+  .runs-display { font-size: 1.8rem; }
+}
