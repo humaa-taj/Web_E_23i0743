@@ -260,7 +260,7 @@ const CricketField = ({ ballPos, batAnimation, bowlAnimation, isOut }) => {
         </g>
       )}
 
-      {/* OUT flash */}
+      {/* OUT flash
       {isOut && (
         <text
           x="400"
@@ -275,7 +275,7 @@ const CricketField = ({ ballPos, batAnimation, bowlAnimation, isOut }) => {
         >
           OUT!
         </text>
-      )}
+      )} */}
     </svg>
   );
 };
