@@ -1,4 +1,4 @@
-import React from 'react';
+import React from "react";
 
 // ==================== CRICKET FIELD SVG ====================
 const CricketField = ({ ballPos, batAnimation, bowlAnimation, isOut }) => {
@@ -6,18 +6,20 @@ const CricketField = ({ ballPos, batAnimation, bowlAnimation, isOut }) => {
   // batAnimation: 'idle' | 'swing' | 'hit'
   // bowlAnimation: 'idle' | 'bowling' | 'approaching'
 
-  const batX = 420;
-  const batY = 300;
+  const batX = 590; // right stumps x position
+  const batY = 290;
 
-  // Ball position: starts at bowler end (left ~120,270) moves to batsman (420,300)
-  const ballX = 120 + (batX - 120) * ballPos;
-  const ballY = 270 + (300 - 270) * ballPos;
+  // Ball travels from just past left stumps (215,285) to just in front of right stumps (570,285)
+  const ballStartX = 215;
+  const ballEndX = 570;
+  const ballX = ballStartX + (ballEndX - ballStartX) * ballPos;
+  const ballY = 285;
 
   return (
     <svg
       viewBox="0 0 800 420"
       xmlns="http://www.w3.org/2000/svg"
-      style={{ width: '100%', height: '100%', borderRadius: '12px' }}
+      style={{ width: "100%", height: "100%", borderRadius: "12px" }}
     >
       {/* Sky gradient */}
       <defs>
@@ -41,8 +43,11 @@ const CricketField = ({ ballPos, batAnimation, bowlAnimation, isOut }) => {
           <feDropShadow dx="2" dy="2" stdDeviation="3" floodOpacity="0.4" />
         </filter>
         <filter id="glow">
-          <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
-          <feMerge><feMergeNode in="coloredBlur"/><feMergeNode in="SourceGraphic"/></feMerge>
+          <feGaussianBlur stdDeviation="3" result="coloredBlur" />
+          <feMerge>
+            <feMergeNode in="coloredBlur" />
+            <feMergeNode in="SourceGraphic" />
+          </feMerge>
         </filter>
       </defs>
 
@@ -50,14 +55,39 @@ const CricketField = ({ ballPos, batAnimation, bowlAnimation, isOut }) => {
       <ellipse cx="400" cy="280" rx="390" ry="200" fill="url(#outfield)" />
 
       {/* Inner circle marking */}
-      <ellipse cx="400" cy="280" rx="200" ry="110" fill="none" stroke="rgba(255,255,255,0.15)" strokeWidth="1.5" strokeDasharray="8 4" />
+      <ellipse
+        cx="400"
+        cy="280"
+        rx="200"
+        ry="110"
+        fill="none"
+        stroke="rgba(255,255,255,0.15)"
+        strokeWidth="1.5"
+        strokeDasharray="8 4"
+      />
 
       {/* Pitch - rectangular strip */}
       <rect x="200" y="255" width="400" height="70" rx="4" fill="url(#pitch)" />
 
       {/* Crease lines */}
-      <line x1="350" y1="255" x2="350" y2="325" stroke="white" strokeWidth="2" opacity="0.7" />
-      <line x1="450" y1="255" x2="450" y2="325" stroke="white" strokeWidth="2" opacity="0.7" />
+      <line
+        x1="350"
+        y1="255"
+        x2="350"
+        y2="325"
+        stroke="white"
+        strokeWidth="2"
+        opacity="0.7"
+      />
+      <line
+        x1="450"
+        y1="255"
+        x2="450"
+        y2="325"
+        stroke="white"
+        strokeWidth="2"
+        opacity="0.7"
+      />
 
       {/* Stumps - bowler end (left) */}
       <rect x="198" y="268" width="3" height="35" rx="1" fill="#f5e6c8" />
@@ -74,12 +104,14 @@ const CricketField = ({ ballPos, batAnimation, bowlAnimation, isOut }) => {
       <rect x="587" y="268" width="17" height="2" rx="1" fill="#f0d080" />
 
       {/* Crowd - simple silhouettes */}
-      {Array.from({length: 40}).map((_, i) => (
-        <ellipse key={i}
+      {Array.from({ length: 40 }).map((_, i) => (
+        <ellipse
+          key={i}
           cx={30 + i * 19}
           cy={60 + Math.sin(i * 1.3) * 10}
-          rx="8" ry="12"
-          fill={['#e63946','#457b9d','#f4a261','#2a9d8f','#6a4c93'][i % 5]}
+          rx="8"
+          ry="12"
+          fill={["#e63946", "#457b9d", "#f4a261", "#2a9d8f", "#6a4c93"][i % 5]}
           opacity="0.7"
         />
       ))}
@@ -93,18 +125,47 @@ const CricketField = ({ ballPos, batAnimation, bowlAnimation, isOut }) => {
         {/* Helmet */}
         <path d="M-10,-52 Q0,-65 10,-52" fill="#1d3557" />
         {/* Arm (bowling action) */}
-        <line x1="6" y1="-35" x2="25" y2="-55" stroke="#1d3557" strokeWidth="4" strokeLinecap="round" />
+        <line
+          x1="6"
+          y1="-35"
+          x2="25"
+          y2="-55"
+          stroke="#1d3557"
+          strokeWidth="4"
+          strokeLinecap="round"
+        />
         {/* Legs */}
-        <line x1="-3" y1="-10" x2="-8" y2="25" stroke="#f5f5f5" strokeWidth="5" strokeLinecap="round" />
-        <line x1="3" y1="-10" x2="10" y2="25" stroke="#f5f5f5" strokeWidth="5" strokeLinecap="round" />
+        <line
+          x1="-3"
+          y1="-10"
+          x2="-8"
+          y2="25"
+          stroke="#f5f5f5"
+          strokeWidth="5"
+          strokeLinecap="round"
+        />
+        <line
+          x1="3"
+          y1="-10"
+          x2="10"
+          y2="25"
+          stroke="#f5f5f5"
+          strokeWidth="5"
+          strokeLinecap="round"
+        />
       </g>
 
       {/* Batsman (right side) */}
       <g transform={`translate(${batX}, ${batY - 60})`}>
         {/* Body */}
-        <rect x="-7" y="-40" width="14" height="32" rx="5"
-          fill={isOut ? '#888' : '#16213e'}
-          style={{ transition: 'fill 0.3s' }}
+        <rect
+          x="-7"
+          y="-40"
+          width="14"
+          height="32"
+          rx="5"
+          fill={isOut ? "#888" : "#16213e"}
+          style={{ transition: "fill 0.3s" }}
         />
         {/* Head */}
         <circle cx="0" cy="-48" r="10" fill="#f4a261" />
@@ -113,25 +174,73 @@ const CricketField = ({ ballPos, batAnimation, bowlAnimation, isOut }) => {
         <rect x="-2" y="-53" width="14" height="4" rx="2" fill="#16213e" />
 
         {/* Bat - animated based on state */}
-        <g transform={batAnimation === 'swing' ? 'rotate(-60, 0, -20)' : batAnimation === 'hit' ? 'rotate(30, 0, -20)' : 'rotate(0, 0, -20)'}
-           style={{ transition: 'transform 0.15s ease-out' }}>
+        <g
+          transform={
+            batAnimation === "swing"
+              ? "rotate(-60, 0, -20)"
+              : batAnimation === "hit"
+                ? "rotate(30, 0, -20)"
+                : "rotate(0, 0, -20)"
+          }
+          style={{ transition: "transform 0.15s ease-out" }}
+        >
           <rect x="5" y="-30" width="8" height="45" rx="3" fill="#c8a96e" />
           <rect x="4" y="-30" width="10" height="5" rx="2" fill="#a07840" />
         </g>
 
         {/* Arms */}
-        <line x1="5" y1="-35" x2="18" y2="-20" stroke="#f4a261" strokeWidth="4" strokeLinecap="round" />
+        <line
+          x1="5"
+          y1="-35"
+          x2="18"
+          y2="-20"
+          stroke="#f4a261"
+          strokeWidth="4"
+          strokeLinecap="round"
+        />
         {/* Legs */}
-        <line x1="-3" y1="-8" x2="-6" y2="30" stroke="#f5f5f5" strokeWidth="6" strokeLinecap="round" />
-        <line x1="3" y1="-8" x2="8" y2="30" stroke="#f5f5f5" strokeWidth="6" strokeLinecap="round" />
+        <line
+          x1="-3"
+          y1="-8"
+          x2="-6"
+          y2="30"
+          stroke="#f5f5f5"
+          strokeWidth="6"
+          strokeLinecap="round"
+        />
+        <line
+          x1="3"
+          y1="-8"
+          x2="8"
+          y2="30"
+          stroke="#f5f5f5"
+          strokeWidth="6"
+          strokeLinecap="round"
+        />
 
         {/* Pads */}
-        <rect x="-9" y="10" width="8" height="20" rx="3" fill="#f0f0f0" opacity="0.9" />
-        <rect x="4" y="10" width="8" height="20" rx="3" fill="#f0f0f0" opacity="0.9" />
+        <rect
+          x="-9"
+          y="10"
+          width="8"
+          height="20"
+          rx="3"
+          fill="#f0f0f0"
+          opacity="0.9"
+        />
+        <rect
+          x="4"
+          y="10"
+          width="8"
+          height="20"
+          rx="3"
+          fill="#f0f0f0"
+          opacity="0.9"
+        />
       </g>
 
       {/* Cricket Ball - only show if bowlAnimation is active */}
-      {bowlAnimation !== 'idle' && (
+      {bowlAnimation !== "idle" && (
         <g>
           <circle
             cx={ballX}
@@ -143,17 +252,25 @@ const CricketField = ({ ballPos, batAnimation, bowlAnimation, isOut }) => {
           {/* Ball seam */}
           <path
             d={`M${ballX - 5},${ballY} Q${ballX},${ballY - 5} ${ballX + 5},${ballY}`}
-            fill="none" stroke="white" strokeWidth="1" opacity="0.6"
+            fill="none"
+            stroke="white"
+            strokeWidth="1"
+            opacity="0.6"
           />
         </g>
       )}
 
       {/* OUT flash */}
       {isOut && (
-        <text x="400" y="200" textAnchor="middle"
-          fontSize="60" fontWeight="900" fill="#e63946"
+        <text
+          x="400"
+          y="200"
+          textAnchor="middle"
+          fontSize="60"
+          fontWeight="900"
+          fill="#e63946"
           fontFamily="Orbitron, sans-serif"
-          style={{ filter: 'drop-shadow(0 0 20px #e63946)' }}
+          style={{ filter: "drop-shadow(0 0 20px #e63946)" }}
           opacity="0.9"
         >
           OUT!
