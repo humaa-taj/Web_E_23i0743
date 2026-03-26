@@ -117,7 +117,7 @@ const CricketField = ({ ballPos, batAnimation, bowlAnimation, isOut }) => {
       ))}
 
       {/* Bowler (left side) - simple figure */}
-      <g transform="translate(150, 260)">
+      <g transform="translate(215, 260)">
         {/* Body */}
         <rect x="-6" y="-40" width="12" height="30" rx="5" fill="#1d3557" />
         {/* Head */}
